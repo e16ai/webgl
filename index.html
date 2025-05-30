@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
+  <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+    }
+
+    a-scene {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <a-scene>
+    <a-sky src="e16ai outside.JPG" rotation="0 100 -15" position="0 0 0"></a-sky>
+    <a-sound src="Morning.mp3" autoplay="true" loop="true" volume="1" position="0 2 5">
+    </a-sound>
+    <!-- Asset management -->
+    <a-assets>
+      <a-asset-item id="leftController" src="animated controller.glb"></a-asset-item>
+      <a-asset-item id="rightController" src="SenseXR controller.glb"></a-asset-item>
+      <a-asset-item id="carModel" src="cybertruck.glb"></a-asset-item>
+    </a-assets>
+
+    <!-- Left Controller -->
+    <a-entity id="left-controller" gltf-model="#leftController" position="-0.5 1.5 -3" rotation="0 -30 0"
+      scale="10 10 10" animation-mixer clickable></a-entity>
+
+    <!-- Right Controller -->
+    <a-entity id="right-controller" gltf-model="#rightController" position="0.7 1.9 -3" scale="10 10 10"
+      rotation="180 100 0" visible="false"></a-entity>
+
+    <!-- Sphere -->
+    <a-sphere id="sphere" position="0.7 2.2 -3" radius="1" color="#ADD8E6" material="opacity: 0.5; transparent: true"
+      visible="false"></a-sphere>
+
+    <!-- Car -->
+    <a-entity id="car" gltf-model="#carModel" position="0.7 2.1 -3" scale="0.3 0.3 0.25"
+      animation="property: rotation; to: 0 360 0; easing: linear; dur:5000; loop:true" visible="false"></a-entity>
+
+    <a-camera>
+      <a-cursor>
+        <a-text id="cursor-label"
+          value="Place circle on controller and Click"
+          align="center"
+          color="red"
+          position="0 0.21 -0.1"
+          scale="0.2 0.2 0.2"
+          visible="true">
+        </a-text>
+
+        <!-- Arrow pointing down (simple cone) -->
+        <a-box id="target" position="0 0.12 -0.1" color="red" depth="0.03" height="0.1" width="0.03"></a-box>
+
+        <!-- Arrow -->
+        <a-entity id="arrow" geometry="primitive: cone; radiusBottom: 0.045; height: 0.06; radiusTop: 0.0001"
+                  material="color: red"
+                  position="0 0.052 -0.1"
+                  rotation="180 0 0"
+                  visible="true">
+          </a-entity>
+      </a-cursor>
+    </a-camera>
+  </a-scene>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const leftController = document.querySelector("#left-controller");
+      const rightController = document.querySelector("#right-controller");
+      const sphere = document.querySelector("#sphere");
+      const car = document.querySelector("#car");
+
+      function resetVisibility() {
+        rightController.setAttribute("visible", "false");
+        sphere.setAttribute("visible", "false");
+        car.setAttribute("visible", "false");
+      }
+
+      function showModelsWithDelay() {
+        resetVisibility();
+        setTimeout(() => {
+          rightController.setAttribute("visible", "true");
+          setTimeout(() => {
+            sphere.setAttribute("visible", "true");
+            setTimeout(() => {
+              car.setAttribute("visible", "true");
+            }, 1000);
+          }, 1000);
+        }, 1000);
+      }
+
+      leftController.addEventListener("click", () => {
+        showModelsWithDelay();
+      });
+    });
+  </script>
+</body>
+
+</html>
